@@ -22,6 +22,53 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 // });
 
 
+const run = async () => {
+  try {
+    await client.connect();
+    const userCollection = client.db('powerHack').collection('users');
+
+    // // user registration get
+    // app.get('/registration', async (req, res) => {
+    //   const userInfo = req.body;
+    //   const email = userInfo.email
+    //   const result = userCollection.findOne({ email })
+    //   res.send(result)
+
+    // })
+
+    // user registration
+    app.post('/registration', async (req, res) => {
+      const userInfo = req.body;
+
+      const email = userInfo.email
+      const exist = await userCollection.findOne({ email })
+      if (!exist) {
+        const result = await userCollection.insertOne(userInfo);
+        res.send(result)
+      }
+      else{
+        res.send({acknowledged: false})
+
+      }
+
+
+
+      
+
+    })
+
+
+
+
+  }
+  finally {
+    // await client.close();
+
+  }
+
+}
+run().catch(console.dir);
+
 
 
 
